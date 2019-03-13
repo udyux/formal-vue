@@ -1,11 +1,11 @@
 import _cloneDeep from 'lodash.clonedeep'
 
-import { events } from '../definitions'
-import { handlers } from '../helpers'
+import { events } from '../constants'
+import { returnValue } from '../utils/helpers'
 
 export default (context, submit) => {
   const onSubmit = submit.onSubmit || submit
-  const { onError, onSuccess = handlers.passDownValue } = submit
+  const { onError, onSuccess = returnValue } = submit
 
   return function() {
     if (this.isSubmitPending) return Promise.reject(new Error('Already submitting'))

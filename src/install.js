@@ -1,5 +1,5 @@
 import createForm from './factories/createForm'
-import { validateFormShape } from './helpers'
+import validateForm from './utils/validateForm'
 
 export default Vue => {
   const persistentStore = new Vue({
@@ -13,7 +13,7 @@ export default Vue => {
   })
 
   const createComputedProp = function(formDefinition) {
-    const { keepAlive, ...form } = validateFormShape(formDefinition)
+    const { keepAlive, ...form } = validateForm(formDefinition)
     form.initialState = typeof form.initialState === 'function' ? form.initialState.call(this) : form.initialState
     const formVM = new Vue(createForm(this, form))
     if (form.name && keepAlive) formVM.fields = persistentStore.bindState(form.name, formVM)

@@ -1,4 +1,4 @@
-export const formNamePrefix = 'Formal'
+export const packageName = 'FormalVue'
 
 export const requiredProps = ['name', 'model', 'submit']
 

@@ -1,7 +1,7 @@
 import _cloneDeep from 'lodash.clonedeep'
 
-import { events, formNamePrefix } from '../definitions'
-import { isEmptyValue } from '../helpers'
+import { events, packageName } from '../constants'
+import { isEmpty } from '../utils/helpers'
 import createFields from './createFields'
 import createSubmitMethod from './createSubmitMethod'
 
@@ -9,7 +9,7 @@ export default (context, { name, computed, initialState, model, submit }) => {
   const { fields, observers, validators, valueMaps } = createFields(model)
 
   return {
-    name: `${formNamePrefix}.${name}`,
+    name: `${packageName}.${name}`,
 
     data() {
       return {
@@ -62,22 +62,28 @@ export default (context, { name, computed, initialState, model, submit }) => {
       })
 
       Object.keys(this.fields).forEach(field => {
-        this.fields[field].isEmpty = isEmptyValue(this.values[field])
+        this.fields[field].isEmpty = isEmpty(this.values[field])
 
         this.$watch(`values.${field}`, (value, valueBefore) => {
           if (value === valueBefore) return
-          this.fields[field].isEmpty = isEmptyValue(value)
+          this.fields[field].isEmpty = isEmpty(value)
           this.$emit(events.changed, { field, ...this.fields[field], value })
         })
       })
 
-      this.$once(events.changed, () => {
-        this.isDirty = true
-      })
+      this.catchDirtyState()
     },
 
     methods: {
       submit: createSubmitMethod(context, submit),
+
+      catchDirtyState() {
+        this.isDirty = false
+
+        this.$once(events.changed, () => {
+          this.isDirty = true
+        })
+      },
 
       fill(fillFields = {}) {
         Object.keys(fillFields).forEach(field => {
@@ -89,6 +95,8 @@ export default (context, { name, computed, initialState, model, submit }) => {
         Object.keys(this.fields).forEach(field => {
           this.fields[field].value = this.fields[field].reset()
         })
+
+        this.catchDirtyState()
       },
 
       validate() {

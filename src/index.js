@@ -1,7 +1,7 @@
-import { events } from './definitions'
+import { events } from './constants'
+import fieldTypes from './fieldTypes'
 import install from './install'
-import models from './modelMixins'
 
-export { events, models }
+export { events, fieldTypes }
 
-export default { events, install, models }
+export default { events, install, fieldTypes }

@@ -1,12 +1,19 @@
 {
   "name": "formal-vue",
-  "version": "0.1.0",
-  "private": true,
+  "version": "0.1.2",
+  "license": "MIT",
+  "main": "src/index.js",
+  "module": "dist/FormalVue.umd.min.js",
+  "files": [
+    "dist/",
+    "src/"
+  ],
   "scripts": {
-    "start": "vue-cli-service serve ./src/index.js",
-    "build": "vue-cli-service build --target lib --name FormalVue ./src/index.js",
+    "build": "vue-cli-service build --target lib --name FormalVue src/index.js",
+    "start": "yarn build --watch",
+    "prepack": "yarn build",
     "lint": "vue-cli-service lint",
-    "test:unit": "vue-cli-service test:unit"
+    "test": "vue-cli-service test:unit"
   },
   "dependencies": {
     "lodash.clonedeep": "^4.5.0",

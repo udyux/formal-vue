@@ -1,8 +1,8 @@
-import { requiredProps, propTypes } from './definitions'
+import { requiredProps, propTypes } from '../constants'
 
 const formatMessage = ([error], props) => `[Formal] ${error.trim()}${props.length > 1 ? 's' : ''}: ${props.join(', ')}`
 
-export const validateFormShape = form => {
+export default form => {
   if (process.env.NODE_ENV === 'production') return form
 
   const checkPropTypes = (expected, [key, type]) => {
@@ -21,12 +21,3 @@ export const validateFormShape = form => {
 
   return form
 }
-
-export const handlers = {
-  passDownValue: v => v,
-  nullValue: () => null,
-  trueValue: () => true
-}
-
-export const isEmptyValue = (value = null) =>
-  value === null || (typeof value !== 'number' && typeof value !== 'object' && !value.length)
