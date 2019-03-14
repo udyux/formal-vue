@@ -8,14 +8,15 @@ describe.each([
   ['number', number, Number],
   ['object', object, Object],
   ['string', string, String]
-])('%s field generator', (name, generator, constructor) => {
+])('fieldTypes.%s()', (name, generator, constructor) => {
   const defaultField = generator({ validateOnChange: true })
   const requiredField = generator.isRequired({ format: v => String(v) })
   const value = defaultField.initialValue()
-  const typeTag = String(constructor())
+  const tag = String(constructor())
 
   test(`initialValue returns type ${constructor.name}`, () => {
     expect(value.constructor.name).toBe(constructor.name)
+    expect(requiredField.initialValue().constructor.name).toBe(constructor.name)
   })
 
   test('default field should validate on change', () => {
@@ -30,7 +31,7 @@ describe.each([
     expect(requiredField.isRequired).toBeTruthy()
   })
 
-  it(`required field should format to ${typeTag}`, () => {
-    expect(requiredField.format(value)).toBe(typeTag)
+  it(`required field should format to ${tag}`, () => {
+    expect(requiredField.format(value)).toBe(tag)
   })
 })
