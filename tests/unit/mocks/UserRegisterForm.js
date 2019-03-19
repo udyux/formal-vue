@@ -1,4 +1,4 @@
-import fieldTypes from '@/fieldTypes'
+import modelTypes from '@/modelTypes'
 
 const $store = {
   testUser: { id: 1, email: 'dev@udy.io', phone: '4189225529' }
@@ -25,20 +25,20 @@ export default {
   keepAlive: true,
 
   model: {
-    email: fieldTypes.string.isRequired({
+    email: modelTypes.string.isRequired({
       validate: ({ email }) => match.email.test(email)
     }),
 
-    password: fieldTypes.string.isRequired({
+    password: modelTypes.string.isRequired({
       validate: ({ password }) => match.password.test(password)
     }),
 
-    confirmPassword: fieldTypes.string.isRequired({
+    confirmPassword: modelTypes.string.isRequired({
       validate: ({ password, confirmPassword }) => password === confirmPassword,
       validateOnChange: true
     }),
 
-    phone: fieldTypes.string({
+    phone: modelTypes.string({
       validate: ({ phone }) => match.phone.test(phone),
       format: ({ phone }) => phone.replace(...substitute.nonDigits).replace(...substitute.phonePrefixes),
       transform: ({ phone }) => phone.replace(...substitute.nonDigits)

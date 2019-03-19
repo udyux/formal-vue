@@ -1,4 +1,4 @@
-import validateForm from '@/utils/validateForm'
+import validateForm from '@/factory/validateForm'
 
 const name = 'Form'
 const keepAlive = true
@@ -6,32 +6,34 @@ const model = {}
 const submit = () => {}
 const initialState = {}
 
-describe.each([
-  ['initialState and submit as functions', { initialState() {}, submit }],
-  ['initialState and submit as objects', { initialState, submit: { onSubmit() {} } }]
-])('validate form with %s', (desc, mixin) => {
-  it('should return the form', () => {
-    expect(validateForm({ name, keepAlive, model, ...mixin })).toBeTruthy()
-  })
-})
+describe('validateForm.js', () => {
+  describe('validateForm(form: Object) => form: Object, throws', () => {
+    describe.each([{ initialState() {}, submit }, { initialState, submit: { onSubmit() {} } }])(
+      'validateForm(%p)',
+      mixin => {
+        const form = { name, keepAlive, model, ...mixin }
+        it('returns the form', () => {
+          expect(validateForm(form)).toBe(form)
+        })
+      }
+    )
 
-describe.each([['name', { model, submit }], ['submit', { name, model }], ['model', { name, submit }]])(
-  'validate form with missing prop %p',
-  (desc, form) => {
-    it('throws', () => {
-      expect(() => validateForm(form)).toThrow(/^\[Formal] Missing required prop/)
-    })
-  }
-)
+    describe.each([{ model, submit }, { name, model }, { name, submit }, { name, model, submit: {} }])(
+      'validateForm(%p)',
+      form => {
+        it('throws a missing required prop error', () => {
+          expect(() => validateForm(form)).toThrow(/^\[Formal] Missing required prop/)
+        })
+      }
+    )
 
-describe.each([
-  ['name', { name: 1 }],
-  ['submit', { submit: 'a' }],
-  ['model', { model: 'a' }],
-  ['initialState', { initialState: 'a' }],
-  ['keepAlive', { keepAlive: 'a' }]
-])('validate form with invalid prop %p', (desc, mixin) => {
-  it('throws', () => {
-    expect(() => validateForm({ name, model, submit, ...mixin })).toThrow(/^\[Formal] Invalid prop-type/)
+    describe.each([{ name: 1 }, { submit: 'a' }, { model: 'a' }, { initialState: 'a' }, { keepAlive: 'a' }])(
+      'validateForm(%p)',
+      mixin => {
+        it('throws an invalid prop error', () => {
+          expect(() => validateForm({ name, model, submit, ...mixin })).toThrow(/^\[Formal] Invalid prop-type/)
+        })
+      }
+    )
   })
 })

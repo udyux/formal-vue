@@ -1,27 +1,27 @@
 import { events } from '../constants'
-import { returnNullValue, returnTrueValue } from '../utils/helpers'
+import { returnNullValue, returnTrueValue } from '../helpers'
 
-export default model =>
-  Object.keys(model).reduce(
+export default modelDefinition =>
+  Object.keys(modelDefinition).reduce(
     ($form, field) => {
       const {
         initialValue = returnNullValue,
         isRequired = false,
         validate: handleValidation = returnTrueValue,
         ...options
-      } = model[field]
+      } = modelDefinition[field]
 
-      const getValidationResult = (values, fields) => {
+      const getValidationResult = (values, model) => {
         const value = values[field]
-        const { isEmpty } = fields[field]
+        const { isEmpty } = model[field]
         const isValid = (isEmpty && !isRequired) || (!isEmpty && handleValidation(values))
         return { field, value, isValid, isMissing: isRequired && isEmpty }
       }
 
       const validate = function() {
-        const result = getValidationResult(this.values, this.fields)
-        this.fields[field].isValid = result.isValid
-        this.fields[field].isMissing = result.isMissing
+        const result = getValidationResult(this.values, this.model)
+        this.model[field].isValid = result.isValid
+        this.model[field].isMissing = result.isMissing
         this.$emit(events.fieldValidated, result)
 
         if (result.isValid) {
@@ -35,12 +35,12 @@ export default model =>
       }
 
       validate.withValues = function(values) {
-        return getValidationResult(values, this.fields)
+        return getValidationResult(values, this.model)
       }
 
       $form.validators.push(validate)
 
-      $form.fields[field] = {
+      $form.model[field] = {
         isRequired,
         validate,
         isEmpty: true,
@@ -55,14 +55,14 @@ export default model =>
 
       if (options.format) {
         $form.observers.format.set(field, function() {
-          this.fields[field].value = options.format(this.safeValuePairs)
+          this.model[field].value = options.format(this.safeValuePairs)
         })
       }
 
       return $form
     },
     {
-      fields: {},
+      model: {},
       validators: [],
       valueMaps: new Map(),
       observers: { format: new Map(), validation: new Map() }

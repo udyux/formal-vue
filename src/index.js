@@ -1,7 +1,7 @@
 import { events } from './constants'
-import fieldTypes from './fieldTypes'
+import modelTypes from './modelTypes'
 import install from './install'
 
-export { events, fieldTypes }
+export { events, modelTypes }
 
-export default { events, install, fieldTypes }
+export default { events, install, modelTypes }

@@ -1,5 +1,4 @@
-import createForm from './factories/createForm'
-import validateForm from './utils/validateForm'
+import createForm from './factory'
 
 export default Vue => {
   const persistentStore = new Vue({
@@ -7,25 +6,21 @@ export default Vue => {
     methods: {
       bindState(id, formVM) {
         formVM.unbindState = () => this.$delete(this.states, id)
-        return this.states[id] || this.$set(this.states, id, formVM.fields)
+        formVM.model = this.states[id] || this.$set(this.states, id, formVM.model)
       }
     }
   })
-
-  const createComputedProp = (context, formDefinition) => {
-    const { keepAlive, ...form } = validateForm(formDefinition)
-    form.initialState = typeof form.initialState === 'function' ? form.initialState.call(this) : form.initialState
-    const formVM = new Vue(createForm(context, form))
-    if (form.name && keepAlive) formVM.fields = persistentStore.bindState(form.name, formVM)
-
-    return () => formVM
-  }
 
   Vue.mixin({
     beforeCreate() {
       if (!this.$options.form) return
       if (!this.$options.computed) this.$options.computed = {}
-      this.$options.computed.$form = createComputedProp(this, this.$options.form)
+      this.$options.computed.$form = createForm(Vue, this, this.$options.form)
+    },
+
+    created() {
+      if (!this.$options.form || !this.$options.form.keepAlive) return
+      persistentStore.bindState(this.$options.form.name, this.$form)
     },
 
     destroyed() {

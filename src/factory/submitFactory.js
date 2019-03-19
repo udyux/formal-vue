@@ -1,7 +1,7 @@
 import _cloneDeep from 'lodash.clonedeep'
 
 import { events } from '../constants'
-import { returnValue } from '../utils/helpers'
+import { returnValue } from '../helpers'
 
 export default (context, submit) => {
   const onSubmit = submit.onSubmit || submit
@@ -14,15 +14,15 @@ export default (context, submit) => {
     this.$emit(events.beforeSubmit, values)
     this.isSubmitPending = true
 
-    const invalidFields = Object.values(this.fields)
+    const invalidFields = Object.values(this.model)
       .map(({ validate }) => validate.withValues.call(this, values))
       .filter(({ isValid }) => !isValid)
 
     const isValid = !invalidFields.length
     this.$emit(events.formValidated, { isValid, errors: invalidFields })
+    if (!isValid) return Promise.reject(invalidFields)
 
     const handleSubmit = (resolve, reject) => {
-      if (!isValid) return reject(invalidFields)
       const result = onSubmit.call(context, { ...values, ...this.computedValues }, resolve, reject)
       if (result !== undefined) result.then(resolve).catch(reject)
     }
