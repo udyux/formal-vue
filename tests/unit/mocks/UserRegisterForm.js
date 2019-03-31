@@ -1,10 +1,6 @@
-import modelTypes from '@/modelTypes'
+import modelTypes from '@/models/modelTypes'
 
-const $store = {
-  testUser: { id: 1, email: 'dev@udy.io', phone: '4189225529' }
-}
-
-export const match = {
+const match = {
   // lazy email validation
   email: /^[^\s\n]+@[^\s\n]+\.[a-z0-9]{2,}$/,
   // > 8 chars, > 0 lower, > 0 upper, > 0 num
@@ -13,17 +9,14 @@ export const match = {
   phone: /^\d{10,11}$/
 }
 
-export const substitute = {
+const substitute = {
   // format to 000-000-0000
   phonePrefixes: [/((?<!\d{6,})\d{3}(?=\d))/g, '$1-'],
   // remove non digits
   nonDigits: [/\D/g, '']
 }
 
-export default {
-  name: 'UserRegister',
-  keepAlive: true,
-
+const form = {
   model: {
     email: modelTypes.string.isRequired({
       validate: ({ email }) => match.email.test(email)
@@ -51,15 +44,24 @@ export default {
     }
   },
 
-  initialState() {
-    return $store.state.user
-  },
-
   submit(values) {
-    // setTimeout(() => {
-    //   resolve({ values, id: this.$store.state.testUser.id })
-    // }, 1000)
-
-    return Promise.resolve({ values })
+    return Promise.resolve({ values, user: this.$store.state.user.id, success: true })
   }
+}
+
+export const UserRegister = {
+  name: 'UserRegister',
+  initialState() {
+    return this.$store.state.user
+  },
+  ...form
+}
+
+export const UserRegisterPersistent = {
+  name: 'UserRegisterPersistent',
+  keepAlive: true,
+  initialState() {
+    return { email: 'example@email.com', phone: '8000000000', password: 'Pass1234', confirmPassword: 'Pass1234' }
+  },
+  ...form
 }

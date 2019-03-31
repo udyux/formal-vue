@@ -1,4 +1,4 @@
-import modelTypes from '@/modelTypes'
+import modelTypes from '@/models/modelTypes'
 
 const testCases = [['array', Array], ['boolean', Boolean], ['number', Number], ['object', Object], ['string', String]]
 

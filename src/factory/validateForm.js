@@ -1,6 +1,7 @@
 import { requiredProps, propTypes } from '../constants'
+import FormalError from '../models/FormalError'
 
-const formatMessage = ([error], props) => `[Formal] ${error.trim()}${props.length > 1 ? 's' : ''}: ${props.join(', ')}`
+const { invalidForm: formatMessage } = FormalError
 
 export default form => {
   if (process.env.NODE_ENV === 'production') return form
@@ -14,10 +15,10 @@ export default form => {
 
   const missingProps = requiredProps.filter(prop => !form[prop])
   if (typeof form.submit === 'object' && !form.submit.onSubmit) missingProps.push('submit.onSubmit')
-  if (missingProps.length) throw formatMessage`Missing required prop ${missingProps}`
+  if (missingProps.length) throw new FormalError(formatMessage`Missing required prop ${missingProps}`)
 
   const invalidProps = propTypes.reduce(checkPropTypes, [])
-  if (invalidProps.length) throw formatMessage`Invalid prop-type ${invalidProps}`
+  if (invalidProps.length) throw new FormalError(formatMessage`Invalid prop-type ${invalidProps}`)
 
   return form
 }

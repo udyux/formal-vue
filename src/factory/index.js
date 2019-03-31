@@ -56,6 +56,10 @@ export default (Vue, context, form) => {
       const initialStateModel = typeof initialState === 'function' ? initialState.call(context) : initialState
       this.fill(initialStateModel)
 
+      this.$on(events.formValidated, ({ errors }) => {
+        this.errors = errors.reduce((errorMap, error) => ({ ...errorMap, [error.field]: error }), [])
+      })
+
       observers.format.forEach((handler, field) => {
         this.$watch(`model.${field}.value`, handler.bind(this), { immediate: true })
       })
@@ -65,6 +69,8 @@ export default (Vue, context, form) => {
       })
 
       Object.keys(this.model).forEach(field => {
+        const { validate } = this.model[field]
+        this.model[field].validate = () => validate.call(this)
         this.model[field].isEmpty = isEmpty(this.values[field])
 
         this.$watch(`values.${field}`, (value, valueBefore) => {
@@ -78,7 +84,11 @@ export default (Vue, context, form) => {
     },
 
     methods: {
-      submit: createSubmitMethod(context, submit),
+      submit: createSubmitMethod(context, submit, validators),
+
+      submitHandler() {
+        this.submit().catch(err => err)
+      },
 
       resetDirtyState() {
         this.isDirty = false
@@ -99,6 +109,7 @@ export default (Vue, context, form) => {
           this.model[field].value = this.model[field].reset()
         })
 
+        this.errors = {}
         this.resetDirtyState()
       },
 
@@ -106,6 +117,10 @@ export default (Vue, context, form) => {
         const isValid = validators.map(validate => validate.call(this)).every(result => result)
         this.$emit(events.formValidated, { isValid, errors: Object.values(this.errors) })
         return isValid
+      },
+
+      validateFields(fields = []) {
+        return fields.every(field => this.model[field] && this.model[field].validate())
       }
     }
   })

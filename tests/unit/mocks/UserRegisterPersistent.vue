@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="$form.submitHandler">
+  <form @submit.prevent="submit">
     <input id="email" v-model="$form.model.email.value" type="text" />
     <input id="password" v-model="$form.model.password.value" type="password" />
     <input id="confirm-password" v-model="$form.model.confirmPassword.value" type="password" />
@@ -9,18 +9,27 @@
 </template>
 
 <script>
-import { UserRegister } from './UserRegisterForm'
+import { UserRegisterPersistent } from './UserRegisterForm'
 import { events } from '@/constants'
 
 export default {
-  name: 'UserRegister',
-  form: UserRegister,
+  name: 'UserRegisterPersistent',
+  form: UserRegisterPersistent,
   beforeMount() {
     Object.values(events).forEach(event => {
       this.$form.$on(event, payload => {
         this.$emit(event, payload)
       })
     })
+  },
+
+  methods: {
+    submit() {
+      this.$form
+        .submit()
+        .then(result => result)
+        .catch(error => error)
+    }
   }
 }
 </script>
