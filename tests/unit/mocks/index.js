@@ -20,3 +20,17 @@ export const getPersistentForm = (mixin = {}) => {
   localVue.use(FormalVue)
   return mount(UserRegisterPersistent, { localVue, mocks: { $store }, ...mixin })
 }
+
+export const validValues = {
+  email: 'example@email.com',
+  phone: '8000000000',
+  password: 'Pass1234',
+  confirmPassword: 'Pass1234'
+}
+
+export const expectedSubmitValues = {
+  email: 'example@email.com',
+  phone: '+18000000000',
+  password: 'Pass1234',
+  confirmPassword: 'Pass1234'
+}

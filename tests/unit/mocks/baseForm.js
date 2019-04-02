@@ -1,4 +1,4 @@
-import modelTypes from '@/models/modelTypes'
+import inputs from '@/models/inputs'
 
 const match = {
   // lazy email validation
@@ -16,22 +16,22 @@ const substitute = {
   nonDigits: [/\D/g, '']
 }
 
-const form = {
+export default {
   model: {
-    email: modelTypes.string.isRequired({
+    email: inputs.text.isRequired({
       validate: ({ email }) => match.email.test(email)
     }),
 
-    password: modelTypes.string.isRequired({
+    password: inputs.text.isRequired({
       validate: ({ password }) => match.password.test(password)
     }),
 
-    confirmPassword: modelTypes.string.isRequired({
+    confirmPassword: inputs.text.isRequired({
       validate: ({ password, confirmPassword }) => password === confirmPassword,
       validateOnChange: true
     }),
 
-    phone: modelTypes.string({
+    phone: inputs.text({
       validate: ({ phone }) => match.phone.test(phone),
       format: ({ phone }) => phone.replace(...substitute.nonDigits).replace(...substitute.phonePrefixes),
       transform: ({ phone }) => phone.replace(...substitute.nonDigits)
@@ -42,26 +42,5 @@ const form = {
     phone() {
       return `+1${this.values.phone}`
     }
-  },
-
-  submit(values) {
-    return Promise.resolve({ values, user: this.$store.state.user.id, success: true })
   }
-}
-
-export const UserRegister = {
-  name: 'UserRegister',
-  initialState() {
-    return this.$store.state.user
-  },
-  ...form
-}
-
-export const UserRegisterPersistent = {
-  name: 'UserRegisterPersistent',
-  keepAlive: true,
-  initialState() {
-    return { email: 'example@email.com', phone: '8000000000', password: 'Pass1234', confirmPassword: 'Pass1234' }
-  },
-  ...form
 }

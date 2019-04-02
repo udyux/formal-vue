@@ -1,5 +1,5 @@
 import createModel from '@/factory/reduceModel'
-import { UserRegister } from './mocks/UserRegisterForm'
+import UserRegister from './mocks/baseForm'
 
 describe('reduceModel.js', () => {
   describe('reduceModel(model: Object) => fieldMaps: Object', () => {

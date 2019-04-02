@@ -9,18 +9,22 @@
 </template>
 
 <script>
-import { UserRegister } from './UserRegisterForm'
-import { events } from '@/constants'
+import baseForm from './baseForm'
+import { echoEvents } from './utils'
 
 export default {
-  name: 'UserRegister',
-  form: UserRegister,
-  beforeMount() {
-    Object.values(events).forEach(event => {
-      this.$form.$on(event, payload => {
-        this.$emit(event, payload)
-      })
-    })
+  name: 'MockForm',
+  beforeMount: echoEvents,
+
+  form: {
+    ...baseForm,
+    name: 'UserRegister',
+    initialState() {
+      return this.$store.state.user
+    },
+    submit(values) {
+      return Promise.resolve({ values, user: this.$store.state.user.id, success: true })
+    }
   }
 }
 </script>

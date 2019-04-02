@@ -1,5 +1,5 @@
 import { events } from '@/constants'
-import { getForm, getPersistentForm } from './mocks/formInstanceFactory'
+import { getForm, getPersistentForm } from './mocks'
 
 describe('FormalVue initial-state', () => {
   describe('mounted instance', () => {

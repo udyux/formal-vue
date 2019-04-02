@@ -1,4 +1,4 @@
-import { getForm, getPersistentForm } from './mocks/formInstanceFactory'
+import { getForm, getPersistentForm } from './mocks'
 
 describe('FormalVue events', () => {
   describe('$form.isDirty: Boolean', () => {

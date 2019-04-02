@@ -9,26 +9,41 @@
 </template>
 
 <script>
-import { UserRegisterPersistent } from './UserRegisterForm'
-import { events } from '@/constants'
+import baseForm from './baseForm'
+import { echoEvents } from './utils'
+import { validValues } from '.'
 
 export default {
-  name: 'UserRegisterPersistent',
-  form: UserRegisterPersistent,
-  beforeMount() {
-    Object.values(events).forEach(event => {
-      this.$form.$on(event, payload => {
-        this.$emit(event, payload)
-      })
-    })
+  name: 'MockForm',
+
+  data() {
+    return { error: null, result: null }
+  },
+
+  beforeMount: echoEvents,
+
+  form: {
+    ...baseForm,
+    name: 'UserRegisterPersistent',
+    keepAlive: true,
+    initialState() {
+      return validValues
+    },
+    submit(values) {
+      return Promise.resolve({ values, user: this.$store.state.user.id, success: true })
+    }
   },
 
   methods: {
     submit() {
       this.$form
         .submit()
-        .then(result => result)
-        .catch(error => error)
+        .then(result => {
+          this.result = result
+        })
+        .catch(error => {
+          this.error = error
+        })
     }
   }
 }

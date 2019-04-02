@@ -1,4 +1,4 @@
-import { getForm } from './mocks/formInstanceFactory'
+import { getForm } from './mocks'
 
 describe('FormalVue methods', () => {
   describe('$form.resetDirtyState() => void', () => {

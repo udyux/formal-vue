@@ -1,10 +1,20 @@
-import modelTypes from '@/models/modelTypes'
+import _get from 'lodash.get'
+import inputs from '@/models/inputs'
 
-const testCases = [['array', Array], ['boolean', Boolean], ['number', Number], ['object', Object], ['string', String]]
+const testCases = [
+  ['checkbox', Boolean],
+  ['checkbox.group', Array],
+  ['file', Object],
+  ['number', Number],
+  ['radio', Array],
+  ['select', String],
+  ['select.multiple', Array],
+  ['text', String]
+]
 
-describe('modelTypes.js', () => {
-  describe.each(testCases)('modelTypes.%s(mixin?: Object) => Object', (field, constructor) => {
-    const result = modelTypes[field]({ validateOnChange: true })
+describe('inputs.js', () => {
+  describe.each(testCases)('inputs.%s(options?: Object) => Object', (field, constructor) => {
+    const result = _get(inputs, field)({ validateOnChange: true })
     const value = result.initialValue()
 
     describe('result.initialValue() => Any', () => {
@@ -26,8 +36,8 @@ describe('modelTypes.js', () => {
     })
   })
 
-  describe.each(testCases)('modelTypes.%s.isRequired(mixin?: Object) => Object', (field, constructor) => {
-    const result = modelTypes[field].isRequired({ format: v => String(v) })
+  describe.each(testCases)('inputs.%s.isRequired(options?: Object) => Object', (field, constructor) => {
+    const result = _get(inputs, field).isRequired({ format: v => String(v) })
     const value = result.initialValue()
     const tag = String(constructor())
 

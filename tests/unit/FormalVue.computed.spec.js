@@ -1,6 +1,6 @@
 import _cloneDeep from 'lodash.clonedeep'
 
-import { getForm } from './mocks/formInstanceFactory'
+import { getForm } from './mocks'
 
 describe('FormalVue computed props', () => {
   describe('$form.values: Object', () => {
