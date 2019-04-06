@@ -1,8 +1,13 @@
-import { events } from '@/constants'
-import { getForm, getPersistentForm } from './mocks'
+import _cloneDeep from 'lodash.clonedeep'
 
-describe('FormalVue initial-state', () => {
-  describe('mounted instance', () => {
+import { events } from '@/constants'
+import { getForm, getPersistentForm, validValues } from './mocks'
+
+const originalEmail = validValues.email
+const replacedEmail = 'something@original.io'
+
+describe('FormalVue state', () => {
+  describe('initial state', () => {
     const renderedForm = getForm()
     const persistentForm = getPersistentForm()
 
@@ -126,6 +131,100 @@ describe('FormalVue initial-state', () => {
 
         it('is a function', () => {
           expect(typeof persistentForm.vm.$form[method]).toBe('function')
+        })
+      })
+    })
+  })
+
+  describe('computed props', () => {
+    describe('$form.values: Object', () => {
+      const wrapper = getForm()
+
+      it('has four fields', () => {
+        expect(Object.keys(wrapper.vm.$form.values).length).toBe(4)
+      })
+
+      it('contains transformed values', () => {
+        expect(wrapper.vm.$form.model.phone.value).toBe('800-000-0000')
+        expect(wrapper.vm.$form.values.phone).toBe('8000000000')
+      })
+    })
+
+    describe('$form.safeValuePairs: Object', () => {
+      const wrapper = getForm()
+      const modelClone = _cloneDeep(wrapper.vm.$form.model)
+      wrapper.vm.$form.safeValuePairs.password = 'a'
+
+      it('has four fields', () => {
+        expect(Object.keys(wrapper.vm.$form.safeValuePairs).length).toBe(4)
+      })
+
+      it('does not mutate the original values', () => {
+        expect(wrapper.vm.$form.model.password.value).toBe(modelClone.password.value)
+      })
+    })
+
+    describe('$form.computedValues: Object', () => {
+      const wrapper = getForm()
+
+      it('has one field', () => {
+        expect(Object.keys(wrapper.vm.$form.computedValues).length).toBe(1)
+      })
+
+      it('has the expected computed value', () => {
+        expect(wrapper.vm.$form.computedValues.phone).toBe('+18000000000')
+      })
+    })
+  })
+
+  describe('persistence', () => {
+    describe('formDefinition.keepAlive?: Boolean', () => {
+      describe('destroy and remount a persistent form', () => {
+        const wrapperFactory = getPersistentForm.factory()
+        const wrapper = wrapperFactory()
+        wrapper.find('#email').setValue(replacedEmail)
+        wrapper.destroy()
+
+        it('mounts with the modified value', () => {
+          expect(wrapperFactory().vm.$form.values.email).toBe(replacedEmail)
+        })
+      })
+
+      describe('manually unbind then destroy and remount a persistent form', () => {
+        const wrapperFactory = getPersistentForm.factory()
+        const wrapper = wrapperFactory()
+        wrapper.find('#email').setValue(replacedEmail)
+        wrapper.vm.$form.unbindState()
+        wrapper.destroy()
+
+        it('mounts with the original value', () => {
+          expect(wrapperFactory().vm.$form.values.email).toBe(originalEmail)
+        })
+      })
+
+      describe('submit then destroy and remount a persistent form', () => {
+        const wrapperFactory = getPersistentForm.factory()
+        const wrapper = wrapperFactory()
+        wrapper.find('#email').setValue(replacedEmail)
+        wrapper.vm.$form.submit()
+
+        it('mounts with the original value', done => {
+          wrapper.vm.$nextTick(() => {
+            wrapper.destroy()
+            expect(wrapperFactory().vm.$form.values.email).toBe(originalEmail)
+            done()
+          })
+        })
+      })
+
+      describe('destroy and remount a non-persistent form', () => {
+        const wrapperFactory = getForm.factory()
+        const wrapper = wrapperFactory()
+        wrapper.find('#email').setValue(originalEmail)
+        wrapper.destroy()
+
+        it('mounts with the original value', () => {
+          expect(wrapperFactory().vm.$form.values.email).toBe(originalEmail)
         })
       })
     })

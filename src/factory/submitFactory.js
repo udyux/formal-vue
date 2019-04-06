@@ -37,13 +37,13 @@ export default (context, submit, validators) => {
         this.$emit(events.formSubmitted, response)
         this.isSubmitPending = false
         if (this.unbindState) this.unbindState()
-        return Promise.resolve(onSuccess.call(this, response))
+        return Promise.resolve(onSuccess.call(context, response))
       })
       .catch(err => {
         const error = err instanceof FormalError ? err : new FormalError(unhandledRejection, err)
         this.$emit(events.submitError, error)
         this.isSubmitPending = false
-        if (onError) onError.call(this, error)
+        if (onError) onError.call(context, error)
         return Promise.reject(error)
       })
   }

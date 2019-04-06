@@ -1,7 +1,7 @@
 import _cloneDeep from 'lodash.clonedeep'
 
 import { events, packageName } from '../constants'
-import { isEmpty } from '../helpers'
+import { isEmpty, returnValue } from '../helpers'
 import reduceModel from './reduceModel'
 import createSubmitMethod from './submitFactory'
 import validateForm from './validateForm'
@@ -86,8 +86,9 @@ export default (Vue, context, form) => {
     methods: {
       submit: createSubmitMethod(context, submit, validators),
 
-      submitHandler() {
-        this.submit().catch(err => err)
+      onSubmit() {
+        const { onError = returnValue } = submit
+        this.submit().catch(onError)
       },
 
       resetDirtyState() {

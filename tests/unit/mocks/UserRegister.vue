@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="$form.submitHandler">
+  <form @submit.prevent="$form.onSubmit">
     <input id="email" v-model="$form.model.email.value" type="text" />
     <input id="password" v-model="$form.model.password.value" type="password" />
     <input id="confirm-password" v-model="$form.model.confirmPassword.value" type="password" />

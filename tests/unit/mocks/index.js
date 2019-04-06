@@ -9,28 +9,42 @@ const $store = {
   }
 }
 
-export const getForm = (mixin = {}) => {
+const getForm = (mixin = {}) => {
   const localVue = createLocalVue()
   localVue.use(FormalVue)
   return mount(UserRegister, { localVue, mocks: { $store }, ...mixin })
 }
 
-export const getPersistentForm = (mixin = {}) => {
+getForm.factory = (mixin = {}) => {
+  const localVue = createLocalVue()
+  localVue.use(FormalVue)
+  return () => mount(UserRegister, { localVue, mocks: { $store }, ...mixin })
+}
+
+const getPersistentForm = (mixin = {}) => {
   const localVue = createLocalVue()
   localVue.use(FormalVue)
   return mount(UserRegisterPersistent, { localVue, mocks: { $store }, ...mixin })
 }
 
-export const validValues = {
+getPersistentForm.factory = (mixin = {}) => {
+  const localVue = createLocalVue()
+  localVue.use(FormalVue)
+  return () => mount(UserRegisterPersistent, { localVue, mocks: { $store }, ...mixin })
+}
+
+const validValues = {
   email: 'example@email.com',
   phone: '8000000000',
   password: 'Pass1234',
   confirmPassword: 'Pass1234'
 }
 
-export const expectedSubmitValues = {
+const expectedSubmitValues = {
   email: 'example@email.com',
   phone: '+18000000000',
   password: 'Pass1234',
   confirmPassword: 'Pass1234'
 }
+
+export { getForm, getPersistentForm, validValues, expectedSubmitValues }
