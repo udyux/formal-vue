@@ -33,9 +33,9 @@ describe('reduceModel.js', () => {
       })
     })
 
-    describe('$form.valueMaps: Map', () => {
+    describe('$form.computedFieldMap: Map', () => {
       it('has one entry', () => {
-        expect($form.valueMaps.size).toBe(1)
+        expect($form.computedFieldMap.size).toBe(1)
       })
     })
 

@@ -34,12 +34,12 @@ export default {
     phone: inputs.text({
       validate: ({ phone }) => match.phone.test(phone),
       format: ({ phone }) => phone.replace(...substitute.nonDigits).replace(...substitute.phonePrefixes),
-      transform: ({ phone }) => phone.replace(...substitute.nonDigits)
+      compute: ({ phone }) => phone.replace(...substitute.nonDigits)
     })
   },
 
   computed: {
-    phone() {
+    intlPhone() {
       return `+1${this.values.phone}`
     }
   }

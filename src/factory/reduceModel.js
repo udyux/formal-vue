@@ -51,7 +51,7 @@ export default modelDefinition =>
       }
 
       if (options.validateOnChange) $form.observers.validation.set(field, validate)
-      if (options.transform) $form.valueMaps.set(field, options.transform)
+      if (options.compute) $form.computedFieldMap.set(field, options.compute)
 
       if (options.format) {
         $form.observers.format.set(field, function() {
@@ -64,7 +64,7 @@ export default modelDefinition =>
     {
       model: {},
       validators: [],
-      valueMaps: new Map(),
+      computedFieldMap: new Map(),
       observers: { format: new Map(), validation: new Map() }
     }
   )

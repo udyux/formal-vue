@@ -52,7 +52,7 @@ Vue.use(FormalVue)
 
 ### Basic usage
 
-The most basic way of defining a form is to define it inline in your component.
+The most basic way of defining a form is inline, in your component.
 
 ```html
 <template>

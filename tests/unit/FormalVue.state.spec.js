@@ -172,7 +172,7 @@ describe('FormalVue state', () => {
       })
 
       it('has the expected computed value', () => {
-        expect(wrapper.vm.$form.computedValues.phone).toBe('+18000000000')
+        expect(wrapper.vm.$form.computedValues.intlPhone).toBe('+18000000000')
       })
     })
   })
