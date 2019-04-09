@@ -36,11 +36,5 @@ export default {
       format: ({ phone }) => phone.replace(...substitute.nonDigits).replace(...substitute.phonePrefixes),
       compute: ({ phone }) => phone.replace(...substitute.nonDigits)
     })
-  },
-
-  computed: {
-    intlPhone() {
-      return `+1${this.values.phone}`
-    }
   }
 }

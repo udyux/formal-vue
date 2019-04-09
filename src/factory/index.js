@@ -7,7 +7,7 @@ import createSubmitMethod from './submitFactory'
 import validateForm from './validateForm'
 
 export default (Vue, context, form) => {
-  const { initialState, name, submit, model: modelShape, computed = {} } = validateForm(form)
+  const { initialState, name, submit, model: modelShape } = validateForm(form)
   const { model, observers, validators, computedFieldMap } = reduceModel(modelShape)
 
   const formVM = new Vue({
@@ -32,16 +32,6 @@ export default (Vue, context, form) => {
             : this.safeValuePairs[field]
           return { ...values, [field]: fieldValue }
         }, {})
-      },
-
-      computedValues() {
-        return Object.keys(computed).reduce(
-          (computedValues, field) => ({
-            ...computedValues,
-            [field]: computed[field].call(this)
-          }),
-          {}
-        )
       },
 
       safeValuePairs() {

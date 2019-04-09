@@ -43,7 +43,6 @@ const validValues = {
 const expectedSubmitValues = {
   email: 'example@email.com',
   phone: '8000000000',
-  intlPhone: '+18000000000',
   password: 'Pass1234',
   confirmPassword: 'Pass1234'
 }

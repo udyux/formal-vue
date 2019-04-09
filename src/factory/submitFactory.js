@@ -28,7 +28,7 @@ export default (context, submit, validators) => {
       if (!isValid) return reject(new FormalError(invalidFields, { invalidFieldMap }))
 
       const rejectWrapper = data => reject(new FormalError(responseError, data))
-      const result = onSubmit.call(context, { ...values, ...this.computedValues }, resolve, rejectWrapper)
+      const result = onSubmit.call(context, values, resolve, rejectWrapper)
       if (result !== undefined) result.then(resolve).catch(rejectWrapper)
     }
 

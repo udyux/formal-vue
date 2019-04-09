@@ -111,12 +111,6 @@ describe('FormalVue state', () => {
         })
       })
 
-      describe('$form.computedValues: Object', () => {
-        it('has one field', () => {
-          expect(Object.keys($form.computedValues).length).toBe(1)
-        })
-      })
-
       describe.each([
         ['unbindState', '', 'void'],
         ['submit', '', 'Promise<Any>'],
@@ -144,7 +138,7 @@ describe('FormalVue state', () => {
         expect(Object.keys(wrapper.vm.$form.values).length).toBe(4)
       })
 
-      it('contains transformed values', () => {
+      it('contains computed values', () => {
         expect(wrapper.vm.$form.model.phone.value).toBe('800-000-0000')
         expect(wrapper.vm.$form.values.phone).toBe('8000000000')
       })
@@ -161,18 +155,6 @@ describe('FormalVue state', () => {
 
       it('does not mutate the original values', () => {
         expect(wrapper.vm.$form.model.password.value).toBe(modelClone.password.value)
-      })
-    })
-
-    describe('$form.computedValues: Object', () => {
-      const wrapper = getForm()
-
-      it('has one field', () => {
-        expect(Object.keys(wrapper.vm.$form.computedValues).length).toBe(1)
-      })
-
-      it('has the expected computed value', () => {
-        expect(wrapper.vm.$form.computedValues.intlPhone).toBe('+18000000000')
       })
     })
   })
