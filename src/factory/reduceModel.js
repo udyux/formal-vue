@@ -1,5 +1,5 @@
 import { events } from '../constants'
-import { returnNullValue, returnTrueValue } from '../helpers'
+import { isRegExp, returnNullValue, returnTrueValue } from '../helpers'
 
 export default modelDefinition =>
   Object.keys(modelDefinition).reduce(
@@ -7,9 +7,13 @@ export default modelDefinition =>
       const {
         initialValue = returnNullValue,
         isRequired = false,
-        validate: handleValidation = returnTrueValue,
+        validate: validationHandler = returnTrueValue,
         ...options
       } = modelDefinition[field]
+
+      const handleValidation = isRegExp(validationHandler)
+        ? values => validationHandler.test(values[field])
+        : validationHandler
 
       const getValidationResult = (values, model) => {
         const value = values[field]

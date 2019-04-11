@@ -25,14 +25,14 @@ That's where **FormalVue** comes in.
 
 ### Features
 
-- **Familiar interface**: mirroring Vue's component API, defining a form feels natural and intuitive.
-- **Composition freedom**: define forms in components or their own files, shape the model to your needs.
-- **Validation observers**: require fields and apply validators on change or before submit.
-- **Formatting observers**: seamlessly format UI output without losing the original values.
-- **Transformers and computed values**: transform or add computed fields to the form's output.
-- **Events and lifecycle hooks**: subscribe to events through Vue's event API or define lifecycle hooks.
-- **Submit and error handling**: validation is done before submit is called and errors are propagated.
-- **Individual field helpers**: common queries, such as `isEmpty` or `isValid`, are automatically generated.
+- **Declarative API**: defining a form is simple and intuitive.
+- **Composition**: define forms inline in components or in dedicated files.
+- **Validation**: require fields, validate on change or before submit.
+- **Formatting**: seamlessly format UI output on the fly.
+- **Computed values**: automatically compute submitted values.
+- **Events and lifecycle**: emits events through Vue and provides lifecycle hooks.
+- **Submit/Error handling**: simplifies form submission and propagates errors.
+- **Field helpers**: common queries, such as `isEmpty` or `isValid`, are built in.
 
 ## Getting started
 
@@ -90,17 +90,19 @@ Vue.component({
       email: inputs.text.isRequired({ 
         validate: regex.email
       }),
-      password: inputs.text.isRequired({ 
-      	validate: ({ password }) => regex.password.test(password) && password.length > 5
-  		}),
+      password: inputs.text.isRequired(),
       confirmPassword: inputs.text.isRequired({
         validate: ({ password, confirmPassword }) => password === confirmPassword,
         validateOnChange: true
       }),
       referralCode: inputs.text({
         format: format.referralCode,
-        preserveOriginal: true
-      })
+        compute: ({ referralCode }) => referralCode.replace('-', '')
+      }),
+      acceptConditions: inputs.checkbox.isRequired()
+    },
+    submit(values) {
+      return this.$http.post('register', values)
     }
   }
 })

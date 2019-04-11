@@ -19,7 +19,7 @@ const substitute = {
 export default {
   model: {
     email: inputs.text.isRequired({
-      validate: ({ email }) => match.email.test(email)
+      validate: match.email
     }),
 
     password: inputs.text.isRequired({

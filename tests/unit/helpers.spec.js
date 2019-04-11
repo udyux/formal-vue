@@ -1,4 +1,4 @@
-import { isEmpty, returnNullValue, returnTrueValue, returnValue } from '@/helpers'
+import { isEmpty, isRegExp, returnNullValue, returnTrueValue, returnValue } from '@/helpers'
 
 describe('helpers.js', () => {
   describe('returnNullValue() => null', () => {
@@ -35,14 +35,37 @@ describe('helpers.js', () => {
       ['1', false],
       [['1'], false],
       [{ a: '1' }, false],
+      [/(\d+)/g, false],
+      [true, false],
+      [false, false],
       [null, true],
       [undefined, true],
       [{}, true],
       [[], true],
       ['', true]
-    ])('isEmpty(%p)', (value, empty) => {
-      it(empty ? 'is empty' : 'is not empty', () => {
-        expect(isEmpty(value)).toBe(empty)
+    ])('isEmpty(%p)', (value, isTrue) => {
+      it(isTrue ? 'is empty' : 'is not empty', () => {
+        expect(isEmpty(value)).toBe(isTrue)
+      })
+    })
+  })
+
+  describe('isRegExp(value: Any) => Boolean', () => {
+    describe.each([
+      [null, false],
+      [undefined, false],
+      [false, false],
+      [true, false],
+      [0, false],
+      [1, false],
+      ['', false],
+      [[], false],
+      [{}, false],
+      [/(\d+)/g, true],
+      [new RegExp('/(\\d+)/g'), true]
+    ])('isRegExp(%p)', (value, isTrue) => {
+      it(isTrue ? 'is a regular expression' : 'is not a regular expression', () => {
+        expect(isRegExp(value)).toBe(isTrue)
       })
     })
   })
