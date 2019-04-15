@@ -2,13 +2,14 @@ import _cloneDeep from 'lodash.clonedeep'
 
 import { events, packageName } from '../constants'
 import { isEmpty, returnValue } from '../helpers'
+import reduceFieldMeta from './reduceFieldMeta'
 import reduceModel from './reduceModel'
 import createSubmitMethod from './submitFactory'
 import validateForm from './validateForm'
 
 export default (Vue, context, form) => {
   const { initialState, name, submit, model: modelShape } = validateForm(form)
-  const { model, observers, validators, computedFieldMap } = reduceModel(modelShape)
+  const { computedFieldMap, metaMap, model, observers, validators } = reduceModel(modelShape)
 
   const formVM = new Vue({
     name: `${packageName}.${name}`,
@@ -16,15 +17,21 @@ export default (Vue, context, form) => {
     data() {
       return {
         events,
+        model,
         errors: {},
-        model: _cloneDeep(model),
         isDirty: false,
         isSubmitPending: false,
+        meta: {},
         unbindState: null
       }
     },
 
     computed: {
+      safeValuePairs() {
+        const clone = _cloneDeep(this.model)
+        return Object.keys(clone).reduce((values, field) => ({ ...values, [field]: clone[field].value }), {})
+      },
+
       values() {
         return Object.keys(this.model).reduce((values, field) => {
           const fieldValue = computedFieldMap.has(field)
@@ -32,11 +39,6 @@ export default (Vue, context, form) => {
             : this.safeValuePairs[field]
           return { ...values, [field]: fieldValue }
         }, {})
-      },
-
-      safeValuePairs() {
-        const clone = _cloneDeep(this.model)
-        return Object.keys(clone).reduce((values, field) => ({ ...values, [field]: clone[field].value }), {})
       }
     },
 
@@ -66,6 +68,10 @@ export default (Vue, context, form) => {
           this.model[field].isEmpty = isEmpty(value)
           this.$emit(events.changed, { field, ...this.model[field], value })
         })
+      })
+
+      metaMap.forEach((meta, field) => {
+        this.meta[field] = reduceFieldMeta(this, meta)
       })
 
       this.resetDirtyState()

@@ -1,4 +1,6 @@
-import { isEmpty, isRegExp, returnNullValue, returnTrueValue, returnValue } from '@/helpers'
+import { isEmpty, isFunction, isRegExp, returnNullValue, returnTrueValue, returnValue } from '@/helpers'
+
+function fn() {}
 
 describe('helpers.js', () => {
   describe('returnNullValue() => null', () => {
@@ -36,6 +38,7 @@ describe('helpers.js', () => {
       [['1'], false],
       [{ a: '1' }, false],
       [/(\d+)/g, false],
+      [fn, false],
       [true, false],
       [false, false],
       [null, true],
@@ -61,11 +64,34 @@ describe('helpers.js', () => {
       ['', false],
       [[], false],
       [{}, false],
+      [fn, false],
       [/(\d+)/g, true],
       [new RegExp('/(\\d+)/g'), true]
     ])('isRegExp(%p)', (value, isTrue) => {
       it(isTrue ? 'is a regular expression' : 'is not a regular expression', () => {
         expect(isRegExp(value)).toBe(isTrue)
+      })
+    })
+  })
+
+  describe('isFunction(value: Any) => Boolean', () => {
+    describe.each([
+      [null, false],
+      [undefined, false],
+      [false, false],
+      [true, false],
+      [0, false],
+      [1, false],
+      ['', false],
+      [[], false],
+      [{}, false],
+      [/(\d+)/g, false],
+      [new RegExp('/(\\d+)/g'), false],
+      [fn, true],
+      [() => {}, true]
+    ])('isFunction(%p)', (value, isTrue) => {
+      it(isTrue ? 'is a function' : 'is not a function', () => {
+        expect(isFunction(value)).toBe(isTrue)
       })
     })
   })
