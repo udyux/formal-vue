@@ -1,4 +1,4 @@
-import validateForm from '@/factory/validateForm'
+import validateForm from '@/factory/validateFormObject'
 
 const name = 'Form'
 const keepAlive = true
@@ -6,7 +6,7 @@ const model = {}
 const submit = () => {}
 const initialState = {}
 
-describe('validateForm.js', () => {
+describe('validateFormObject.js', () => {
   describe('validateForm(form: Object) => form: Object, throws', () => {
     describe.each([{ initialState() {}, submit }, { initialState, submit: { onSubmit() {} } }])(
       'validateForm(%p)',

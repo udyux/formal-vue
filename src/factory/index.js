@@ -1,15 +1,15 @@
 import _cloneDeep from 'lodash.clonedeep'
 
 import { events, packageName } from '../constants'
-import { isEmpty, returnValue } from '../helpers'
-import reduceFieldMeta from './reduceFieldMeta'
+import { returnValue } from '../helpers'
+import bindForm from './bindForm'
 import reduceModel from './reduceModel'
 import createSubmitMethod from './submitFactory'
-import validateForm from './validateForm'
+import validateForm from './validateFormObject'
 
 export default (Vue, context, form) => {
   const { initialState, name, submit, model: modelShape } = validateForm(form)
-  const { computedFieldMap, metaMap, model, observers, validators } = reduceModel(modelShape)
+  const { computedFieldMap, model, validators, ...bindings } = reduceModel(modelShape)
 
   const formVM = new Vue({
     name: `${packageName}.${name}`,
@@ -21,7 +21,6 @@ export default (Vue, context, form) => {
         errors: {},
         isDirty: false,
         isSubmitPending: false,
-        meta: {},
         unbindState: null
       }
     },
@@ -45,35 +44,7 @@ export default (Vue, context, form) => {
     created() {
       const initialStateModel = typeof initialState === 'function' ? initialState.call(context) : initialState
       this.fill(initialStateModel)
-
-      this.$on(events.formValidated, ({ errors }) => {
-        this.errors = errors.reduce((errorMap, error) => ({ ...errorMap, [error.field]: error }), [])
-      })
-
-      observers.format.forEach((handler, field) => {
-        this.$watch(`model.${field}.value`, handler.bind(this), { immediate: true })
-      })
-
-      observers.validation.forEach((handler, field) => {
-        this.$watch(`values.${field}`, handler.bind(this))
-      })
-
-      Object.keys(this.model).forEach(field => {
-        const { validate } = this.model[field]
-        this.model[field].validate = () => validate.call(this)
-        this.model[field].isEmpty = isEmpty(this.values[field])
-
-        this.$watch(`values.${field}`, (value, valueBefore) => {
-          if (value === valueBefore) return
-          this.model[field].isEmpty = isEmpty(value)
-          this.$emit(events.changed, { field, ...this.model[field], value })
-        })
-      })
-
-      metaMap.forEach((meta, field) => {
-        this.meta[field] = reduceFieldMeta(this, meta)
-      })
-
+      bindForm(this, { events, ...bindings })
       this.resetDirtyState()
     },
 

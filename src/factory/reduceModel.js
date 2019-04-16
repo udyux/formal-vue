@@ -50,6 +50,7 @@ export default modelDefinition =>
         isEmpty: true,
         isValid: true,
         isMissing: false,
+        meta: {},
         reset: initialValue,
         value: initialValue()
       }
