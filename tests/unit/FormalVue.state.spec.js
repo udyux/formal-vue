@@ -1,30 +1,30 @@
 import _cloneDeep from 'lodash.clonedeep'
 
 import { events } from '@/constants'
-import { getForm, getPersistentForm, validValues } from './mocks'
+import { getForm, getPersistentForm, validValues, metaFields } from './mocks'
 
 const originalEmail = validValues.email
 const replacedEmail = 'something@original.io'
 
 describe('FormalVue state', () => {
   describe('initial state', () => {
-    const renderedForm = getForm()
-    const persistentForm = getPersistentForm()
+    const wrapper = getForm()
+    const persistentWrapper = getPersistentForm()
 
     it('renders a form element', () => {
-      expect(renderedForm.contains('form')).toBeTruthy()
+      expect(wrapper.contains('form')).toBeTruthy()
     })
 
     it('renders four inputs', () => {
-      expect(renderedForm.findAll('input').length).toBe(4)
+      expect(wrapper.findAll('input').length).toBe(4)
     })
 
     it('renders a button', () => {
-      expect(renderedForm.contains('button')).toBeTruthy()
+      expect(wrapper.contains('button')).toBeTruthy()
     })
 
     describe('vm.$form: FormalVue', () => {
-      const { $form } = renderedForm.vm
+      const { $form } = wrapper.vm
 
       it('has a mounted form instance', () => {
         expect($form).toBeTruthy()
@@ -49,6 +49,18 @@ describe('FormalVue state', () => {
 
         it('has four fields', () => {
           expect(Object.keys($form.model).length).toBe(4)
+        })
+
+        describe.each(Object.keys($form.model))('$form.model.%s.meta', field => {
+          it('has the "meta" prop', () => {
+            expect($form.model[field].meta).toBeDefined()
+          })
+        })
+
+        describe.each(metaFields)('$form.model.%s.meta.%s: Any', (field, meta, value) => {
+          it('has the expected value', () => {
+            expect($form.model[field].meta[meta]).toBe(value)
+          })
         })
 
         describe('FormalVue.initialState(values: Object) => void', () => {
@@ -120,11 +132,11 @@ describe('FormalVue state', () => {
         ['validate', '', 'Boolean']
       ])('$form.%s(%s) => %s', method => {
         it('is defined', () => {
-          expect(persistentForm.vm.$form[method]).toBeDefined()
+          expect(persistentWrapper.vm.$form[method]).toBeDefined()
         })
 
         it('is a function', () => {
-          expect(typeof persistentForm.vm.$form[method]).toBe('function')
+          expect(typeof persistentWrapper.vm.$form[method]).toBe('function')
         })
       })
     })

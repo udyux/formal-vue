@@ -27,7 +27,7 @@ export default {
       validate: ({ password }) => match.password.test(password),
       meta: {
         hash() {
-          return (this.model.email.length + 1) * 144
+          return (this.model.email.value.length + 1) * 144
         }
       }
     }),

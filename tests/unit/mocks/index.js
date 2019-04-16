@@ -16,5 +16,6 @@ export const expectedSubmitValues = {
   confirmPassword: 'Pass1234'
 }
 
+export const metaFields = [['email', 'label', 'Email'], ['password', 'hash', 2592]]
 export const getForm = createFormFactory(UserRegister)
 export const getPersistentForm = createFormFactory(UserRegisterPersistent)
