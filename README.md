@@ -1,4 +1,4 @@
-<h1 style="text-align:center">
+<h1 align="center">
   <img src="./formal-vue.svg" width="128px" height="128px" /><br/>
   FormalVue
 </h1>
