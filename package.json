@@ -1,7 +1,21 @@
 {
   "name": "formal-vue",
   "version": "0.4.0",
+  "description": "A straightforward, unopinionated and extendable form manager for VueJS.",
   "license": "MIT",
+  "author": "Nicolas Udy <dev@udy.io>",
+  "homepage": "https://github.com/udyux/formal-vue",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:udyux/formal-vue.git"
+  },
+  "keywords": [
+    "vue",
+    "vuejs",
+    "form",
+    "form-manager",
+    "vuex"
+  ],
   "main": "src/index.js",
   "module": "dist/FormalVue.umd.min.js",
   "files": [
@@ -11,7 +25,7 @@
   "scripts": {
     "build": "vue-cli-service build --target lib --name FormalVue src/index.js",
     "start": "yarn build --watch",
-    "prepack": "yarn build",
+    "prepack": "yarn lint && yarn test && yarn build",
     "postversion": "git push --follow-tags",
     "lint": "vue-cli-service lint",
     "test": "vue-cli-service test:unit"
