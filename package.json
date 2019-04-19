@@ -1,6 +1,6 @@
 {
   "name": "formal-vue",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A straightforward, unopinionated and extendable form manager for VueJS.",
   "license": "MIT",
   "author": "Nicolas Udy <dev@udy.io>",
