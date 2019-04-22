@@ -1,5 +1,5 @@
 import _get from 'lodash.get'
-import inputs from '@/models/inputs'
+import { inputs } from '@/index'
 
 const testCases = [
   ['checkbox', Boolean],
