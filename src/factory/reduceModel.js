@@ -18,7 +18,8 @@ export default modelDefinition =>
       const getValidationResult = (values, model) => {
         const value = values[field]
         const { isEmpty } = model[field]
-        const isValid = (isEmpty && !isRequired) || (!isEmpty && handleValidation(values))
+        const isMissing = isRequired && (isEmpty || value === false)
+        const isValid = (isEmpty && !isRequired) || (!isMissing && handleValidation(values))
         return { field, value, isValid, isMissing: isRequired && isEmpty }
       }
 

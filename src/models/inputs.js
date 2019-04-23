@@ -1,31 +1,18 @@
-const defineModel = initialValue => {
-  const wrapRequired = model =>
-    Object.defineProperty(model, 'isRequired', { value: (options = {}) => model({ ...options, isRequired: true }) })
+const wrapRequired = model =>
+  Object.defineProperty(model, 'isRequired', { value: (options = {}) => model({ ...options, isRequired: true }) })
 
-  const model = wrapRequired((options = {}) => ({ initialValue, ...options }))
+const modelWrapperReducer = (model, [key, mixin]) =>
+  Object.defineProperty(model, key, { value: wrapRequired((options = {}) => model({ ...mixin, ...options })) })
 
-  const unwrap = () => model
-  unwrap.mixin = (name, mixin) => {
-    model[name] = wrapRequired((options = {}) => model({ ...mixin, ...options }))
-    return unwrap
-  }
-
-  return unwrap
-}
-
-const types = {
-  array: defineModel(Array),
-  boolean: defineModel(Boolean),
-  number: defineModel(Number),
-  object: defineModel(Object),
-  string: defineModel(String)
-}
+const defineModel = (initialValue, mixins = {}) =>
+  Object.entries(mixins).reduce(modelWrapperReducer, wrapRequired((options = {}) => ({ initialValue, ...options })))
 
 export default {
-  checkbox: types.boolean.mixin('group', { initialValue: Array })(),
-  file: types.object(),
-  number: types.number(),
-  radio: types.array(),
-  select: types.string.mixin('multiple', { initialValue: Array })(),
-  text: types.string()
+  checkbox: defineModel(Boolean, { group: { initialValue: Array } }),
+  file: defineModel(Object),
+  null: defineModel(),
+  number: defineModel(Number),
+  radio: defineModel(Array),
+  select: defineModel(String, { multiple: { initialValue: Array } }),
+  text: defineModel(String)
 }
