@@ -19,9 +19,9 @@ export default Vue => {
     },
 
     created() {
-      const { form = {} } = this.$options
-      if (!form.keepAlive || !form.name) return
-      persistentStore.bindState(form.name, this.$form)
+      if (!this.$options.form) return
+      const { keepAlive, name } = this.$options.form
+      if (keepAlive && name) persistentStore.bindState(name, this.$form)
     },
 
     destroyed() {
