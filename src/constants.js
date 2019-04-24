@@ -1,6 +1,6 @@
 export const packageName = 'FormalVue'
 
-export const requiredProps = ['name', 'model', 'submit']
+export const requiredProps = ['model', 'submit']
 
 export const events = {
   beforeSubmit: 'before-submit',
