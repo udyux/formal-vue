@@ -5,7 +5,7 @@
 
 > A straightforward, unopinionated and extendable way to manage your forms in VueJS.
 
-## Formal Introduction
+## Formal introduction
 
 Choosing a form manager often comes down picking a compromise. Some enforce a specific markup incompatible with your design requirements, others promote patterns that may not be in line with your project's approach.
 
@@ -44,9 +44,23 @@ import FormalVue from 'formal-vue'
 Vue.use(FormalVue)
 ```
 
-### Getting started
+### Model composition
 
-Before digging in, take a look at this example to get a sense of how things will look.
+
+
+## API
+
+A form object has the following properties:
+
+| Prop             | Type                | Required | Description |
+| ---------------- | ------------------- | :------: | ----------- |
+| __initialState__ | `function | object` |          |             |
+| __keepAlive__    | `boolean`           |          |             |
+| __model__        | `object`            |  __X__   |             |
+| __name__         | `string`            |  __X__   |             |
+| __submit__       | `function | object` |  __X__   |             |
+
+Before digging in, take a look at this example to get a sense of how things look.
 
 ###### `forms/UserRegistration.js`
 
