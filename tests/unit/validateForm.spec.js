@@ -18,14 +18,11 @@ describe('validateFormObject.js', () => {
       }
     )
 
-    describe.each([{ model, submit }, { name, model }, { name, submit }, { name, model, submit: {} }])(
-      'validateForm(%p)',
-      form => {
-        it('throws a missing required prop error', () => {
-          expect(() => validateForm(form)).toThrow(/^\[Formal] Missing required prop/)
-        })
-      }
-    )
+    describe.each([{ name, model }, { name, submit }, { name, model, submit: {} }])('validateForm(%p)', form => {
+      it('throws a missing required prop error', () => {
+        expect(() => validateForm(form)).toThrow(/^\[Formal] Missing required prop/)
+      })
+    })
 
     describe.each([{ name: 1 }, { submit: 'a' }, { model: 'a' }, { initialState: 'a' }, { keepAlive: 'a' }])(
       'validateForm(%p)',
