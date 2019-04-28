@@ -1,6 +1,5 @@
-import _cloneDeep from 'lodash.clonedeep'
-
-import { events, packageName } from '../constants'
+import copyProps from 'copy-props'
+import { events } from '../constants'
 import { returnValue } from '../helpers'
 import bindForm from './bindForm'
 import reduceModel from './reduceModel'
@@ -8,11 +7,11 @@ import createSubmitMethod from './submitFactory'
 import validateForm from './validateFormObject'
 
 export default (Vue, context, form) => {
-  const { initialState, name, submit, model: modelShape } = validateForm(form)
+  const { initialState, name, submit, model: modelShape, keepAlive = false } = validateForm(form)
   const { computedFieldMap, model, validators, ...bindings } = reduceModel(modelShape)
 
   const formVM = new Vue({
-    name: `${packageName}.${name}`,
+    name: `Formal.${name}`,
 
     data() {
       return {
@@ -20,14 +19,15 @@ export default (Vue, context, form) => {
         model,
         errors: {},
         isDirty: false,
+        isPersistent: keepAlive,
         isSubmitPending: false,
-        unbindState: null
+        unbindState: () => {}
       }
     },
 
     computed: {
       safeValuePairs() {
-        const clone = _cloneDeep(this.model)
+        const clone = copyProps(this.model)
         return Object.keys(clone).reduce((values, field) => ({ ...values, [field]: clone[field].value }), {})
       },
 
@@ -46,6 +46,10 @@ export default (Vue, context, form) => {
       this.fill(initialStateModel)
       bindForm(this, { events, ...bindings })
       this.resetDirtyState()
+    },
+
+    beforeDestroy() {
+      if (!keepAlive) this.unbindState()
     },
 
     methods: {

@@ -7,10 +7,31 @@ import {
   isRegExp,
   returnNullValue,
   returnTrueValue,
-  returnValue
+  returnValue,
+  uniqueId
 } from '@/helpers'
 
-describe('helpers.js', () => {
+describe('helpers', () => {
+  describe('uniqueId(length: Number = 8) => String', () => {
+    const defaultBatch = Array.from(Array(100), () => uniqueId())
+
+    it('returns a string comprised of a letter followed by 7 characters', () => {
+      expect(defaultBatch.every(id => /^[a-zA-Z][a-zA-Z0-9]{7}/.test(id))).toBeTruthy()
+    })
+
+    it('returns a unique ID (not realistically testable', () => {
+      expect(defaultBatch.indexOf(uniqueId())).toBe(-1)
+    })
+
+    it('returns the specified length', () => {
+      expect(uniqueId(10)).toMatch(/^[a-zA-Z][a-zA-Z0-9]{9}/)
+    })
+
+    it('defaults to 4 if a lower number is given', () => {
+      expect(uniqueId(3)).toMatch(/^[a-zA-Z][a-zA-Z0-9]{3}/)
+    })
+  })
+
   describe('returnNullValue() => null', () => {
     it('returns `null`', () => {
       expect(returnNullValue()).toBeNull()

@@ -1,5 +1,3 @@
-export const packageName = 'FormalVue'
-
 export const requiredProps = ['model', 'submit']
 
 export const events = {
