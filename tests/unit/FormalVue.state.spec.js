@@ -1,4 +1,4 @@
-import _cloneDeep from 'lodash.clonedeep'
+import copyProps from 'copy-props'
 
 import { events } from '@/constants'
 import { getForm, getPersistentForm, validValues, metaFields } from './mocks'
@@ -158,7 +158,7 @@ describe('FormalVue state', () => {
 
     describe('$form.safeValuePairs: Object', () => {
       const wrapper = getForm()
-      const modelClone = _cloneDeep(wrapper.vm.$form.model)
+      const modelClone = copyProps(wrapper.vm.$form.model)
       wrapper.vm.$form.safeValuePairs.password = 'a'
 
       it('has four fields', () => {

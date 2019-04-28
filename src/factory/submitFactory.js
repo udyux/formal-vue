@@ -1,5 +1,4 @@
-import _cloneDeep from 'lodash.clonedeep'
-
+import copyProps from 'copy-props'
 import FormalError from '@/models/FormalError'
 import { events } from '../constants'
 import { returnValue } from '../helpers'
@@ -14,7 +13,7 @@ export default (context, submit, validators) => {
     const handleSubmit = (resolve, reject) => {
       if (this.isSubmitPending) return reject(new FormalError(submitPending))
 
-      const values = _cloneDeep(this.values)
+      const values = copyProps(this.values)
       this.$emit(events.beforeSubmit, values)
       this.isSubmitPending = true
 
@@ -36,7 +35,7 @@ export default (context, submit, validators) => {
       .then(response => {
         this.$emit(events.formSubmitted, response)
         this.isSubmitPending = false
-        if (this.unbindState) this.unbindState()
+        this.unbindState()
         return Promise.resolve(onSuccess.call(context, response))
       })
       .catch(err => {

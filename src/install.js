@@ -1,7 +1,8 @@
 import createForm from './factory'
+import { uniqueId } from './helpers'
 
 export default Vue => {
-  const persistentStore = new Vue({
+  const formStore = new Vue({
     data: { states: {} },
     methods: {
       bindState(id, formVM) {
@@ -20,8 +21,8 @@ export default Vue => {
 
     created() {
       if (!this.$options.form) return
-      const { keepAlive, name } = this.$options.form
-      if (keepAlive && name) persistentStore.bindState(name, this.$form)
+      const name = this.$options.form.name || uniqueId()
+      formStore.bindState(name, this.$form)
     },
 
     destroyed() {

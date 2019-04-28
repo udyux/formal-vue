@@ -1,6 +1,9 @@
 export const isFunction = value => typeof value === 'function'
+
 export const isNumber = value => typeof value === 'number' && !isNaN(value)
+
 export const isObject = value => value !== null && !Array.isArray(value) && typeof value === 'object'
+
 export const isNullOrUndefined = (value = null) => value === null
 
 export const isRegExp = value => {
@@ -16,9 +19,3 @@ export const isEmpty = (value = null) => {
   const isEmptyObject = isValueObject && !isRegExp(value) && Object.keys(value).length === 0
   return isEmptyObject || (!isImpliedValue && !isValueObject && !value.length)
 }
-
-export const returnNullValue = () => null
-
-export const returnTrueValue = () => true
-
-export const returnValue = v => v
