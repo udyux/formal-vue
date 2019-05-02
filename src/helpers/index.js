@@ -1,3 +1,3 @@
 export * from './typeChecks'
 export * from './returnHandlers'
-export * from './uniqueId'
+export { default as uniqueId } from './uniqueId'

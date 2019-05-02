@@ -1,6 +1,4 @@
 import copyProps from 'copy-props'
-
-import { events } from '@/constants'
 import { getForm, getPersistentForm, validValues, metaFields } from './mocks'
 
 const originalEmail = validValues.email
@@ -28,12 +26,6 @@ describe('FormalVue state', () => {
 
       it('has a mounted form instance', () => {
         expect($form).toBeTruthy()
-      })
-
-      describe('$form.events: Object', () => {
-        it('is the events constant', () => {
-          expect($form.events).toBe(events)
-        })
       })
 
       describe('$form.errors: Object', () => {

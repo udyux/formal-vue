@@ -2,6 +2,9 @@ import createForm from './factory'
 import { uniqueId } from './helpers'
 
 export default Vue => {
+  const [major, minor] = Vue.version.split('.').map(Number)
+  const inject = major < 2 || minor < 5 ? {} : { $parentForm: { default: null } }
+
   const formStore = new Vue({
     data: { states: {} },
     methods: {
@@ -13,10 +16,14 @@ export default Vue => {
   })
 
   Vue.mixin({
+    inject,
+    provide: {},
+    computed: {},
     beforeCreate() {
       if (!this.$options.form) return
-      if (!this.$options.computed) this.$options.computed = {}
-      this.$options.computed.$form = createForm(Vue, this, this.$options.form)
+      const formVM = createForm(Vue, this, this.$options.form)
+      this.$options.computed.$form = formVM
+      this.$options.provide.$parentForm = formVM()
     },
 
     created() {

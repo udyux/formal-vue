@@ -1,10 +1,13 @@
 import copyProps from 'copy-props'
 import { events } from '../constants'
 import { returnValue } from '../helpers'
+import FormalError from '../models/FormalError'
 import bindForm from './bindForm'
 import reduceModel from './reduceModel'
 import createSubmitMethod from './submitFactory'
 import validateForm from './validateFormObject'
+
+const { bindingError } = FormalError
 
 export default (Vue, context, form) => {
   const { initialState, name, submit, model: modelShape, keepAlive = false } = validateForm(form)
@@ -15,7 +18,6 @@ export default (Vue, context, form) => {
 
     data() {
       return {
-        events,
         model,
         errors: {},
         isDirty: false,
@@ -60,12 +62,9 @@ export default (Vue, context, form) => {
         this.submit().catch(onError)
       },
 
-      resetDirtyState() {
-        this.isDirty = false
-
-        this.$once(events.changed, () => {
-          this.isDirty = true
-        })
+      bind(field) {
+        if (!this.model[field]) throw new FormalError(bindingError`${field} is undefined`)
+        return this.model[field].value
       },
 
       fill(fillFields = {}) {
@@ -81,6 +80,14 @@ export default (Vue, context, form) => {
 
         this.errors = {}
         this.resetDirtyState()
+      },
+
+      resetDirtyState() {
+        this.isDirty = false
+
+        this.$once(events.changed, () => {
+          this.isDirty = true
+        })
       },
 
       validate() {
