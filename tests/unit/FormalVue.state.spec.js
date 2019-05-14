@@ -1,4 +1,3 @@
-import copyProps from 'copy-props'
 import { getForm, getPersistentForm, validValues, metaFields } from './mocks'
 
 const originalEmail = validValues.email
@@ -109,12 +108,6 @@ describe('FormalVue state', () => {
         })
       })
 
-      describe('$form.safeValuePairs: Object', () => {
-        it('has the same keys as $form.model', () => {
-          expect(Object.keys($form.safeValuePairs).join()).toBe(Object.keys($form.model).join())
-        })
-      })
-
       describe.each([
         ['unbindState', '', 'void'],
         ['submit', '', 'Promise<Any>'],
@@ -145,20 +138,6 @@ describe('FormalVue state', () => {
       it('contains computed values', () => {
         expect(wrapper.vm.$form.model.phone.value).toBe('800-000-0000')
         expect(wrapper.vm.$form.values.phone).toBe('8000000000')
-      })
-    })
-
-    describe('$form.safeValuePairs: Object', () => {
-      const wrapper = getForm()
-      const modelClone = copyProps(wrapper.vm.$form.model)
-      wrapper.vm.$form.safeValuePairs.password = 'a'
-
-      it('has four fields', () => {
-        expect(Object.keys(wrapper.vm.$form.safeValuePairs).length).toBe(4)
-      })
-
-      it('does not mutate the original values', () => {
-        expect(wrapper.vm.$form.model.password.value).toBe(modelClone.password.value)
       })
     })
   })

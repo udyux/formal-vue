@@ -2,60 +2,62 @@ import copyProps from 'copy-props'
 import { events } from '../constants'
 import { returnValue } from '../helpers'
 import FormalError from '../models/FormalError'
-import bindForm from './bindForm'
-import reduceModel from './reduceModel'
-import createSubmitMethod from './submitFactory'
+import bindFormEvents from './bindFormEvents'
+import createSubmitMethod from './createSubmitMethod'
+import createUnloadGuard from './createUnloadGuard'
+import { reduceFieldValues, reduceModel } from './reducers'
 import validateForm from './validateFormObject'
 
 const { bindingError } = FormalError
 
 export default (Vue, context, form) => {
-  const { initialState, name, submit, model: modelShape, keepAlive = false } = validateForm(form)
-  const { computedFieldMap, model, validators, ...bindings } = reduceModel(modelShape)
+  const { initialState, name, submit, model, unloadGuard = false, keepAlive = false } = validateForm(form)
+  const bindings = reduceModel(model)
 
-  const formVM = new Vue({
+  const FormalVM = new Vue({
     name: `Formal.${name}`,
 
     data() {
       return {
-        model,
         errors: {},
         isDirty: false,
-        isPersistent: keepAlive,
         isSubmitPending: false,
-        unbindState: () => {}
+        model: bindings.model,
+        unbindState: () => {},
+        removeUnloadGuard: () => {}
       }
     },
 
     computed: {
-      safeValuePairs() {
-        const clone = copyProps(this.model)
-        return Object.keys(clone).reduce((values, field) => ({ ...values, [field]: clone[field].value }), {})
-      },
-
       values() {
-        return Object.keys(this.model).reduce((values, field) => {
-          const fieldValue = computedFieldMap.has(field)
-            ? computedFieldMap.get(field)(this.safeValuePairs)
-            : this.safeValuePairs[field]
-          return { ...values, [field]: fieldValue }
-        }, {})
+        const safeValues = copyProps(reduceFieldValues(this.model))
+        return Object.keys(this.model).reduce(
+          (values, field) => ({
+            ...values,
+            [field]: bindings.computedFieldMap.has(field)
+              ? bindings.computedFieldMap.get(field)(safeValues)
+              : safeValues[field]
+          }),
+          {}
+        )
       }
     },
 
     created() {
       const initialStateModel = typeof initialState === 'function' ? initialState.call(context) : initialState
       this.fill(initialStateModel)
-      bindForm(this, { events, ...bindings })
+      bindFormEvents(this, { events, ...bindings })
       this.resetDirtyState()
+      this.removeUnloadGuard = createUnloadGuard(this, unloadGuard)
     },
 
     beforeDestroy() {
-      if (!keepAlive) this.unbindState()
+      if (!keepAlive && this.unbindState) this.unbindState()
+      this.removeUnloadGuard()
     },
 
     methods: {
-      submit: createSubmitMethod(context, submit, validators),
+      submit: createSubmitMethod(context, submit, bindings.validators),
 
       onSubmit() {
         const { onError = returnValue } = submit
@@ -68,14 +70,14 @@ export default (Vue, context, form) => {
       },
 
       fill(fillFields = {}) {
-        Object.keys(fillFields).forEach(field => {
-          if (this.model[field] !== undefined) this.model[field].value = fillFields[field]
+        Object.entries(fillFields).forEach(([field, value]) => {
+          if (this.model[field] !== undefined) this.model[field].value = value
         })
       },
 
       reset() {
-        Object.keys(this.model).forEach(field => {
-          this.model[field].value = this.model[field].reset()
+        Object.entries(this.model).forEach(([field, { reset }]) => {
+          this.model[field].value = reset()
         })
 
         this.errors = {}
@@ -91,7 +93,7 @@ export default (Vue, context, form) => {
       },
 
       validate() {
-        const isValid = validators.map(validate => validate.call(this)).every(result => result)
+        const isValid = bindings.validators.map(validate => validate.call(this)).every(result => result)
         this.$emit(events.formValidated, { isValid, errors: Object.values(this.errors) })
         return isValid
       },
@@ -103,6 +105,6 @@ export default (Vue, context, form) => {
   })
 
   return function() {
-    return formVM
+    return FormalVM
   }
 }

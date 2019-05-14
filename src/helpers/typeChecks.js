@@ -19,3 +19,23 @@ export const isEmpty = (value = null) => {
   const isEmptyObject = isValueObject && !isRegExp(value) && Object.keys(value).length === 0
   return isEmptyObject || (!isImpliedValue && !isValueObject && !value.length)
 }
+
+export const isVue = ($Vue, { minVersion, isInstance, isConstructor }) => {
+  const isVueConstructor = isFunction($Vue) && $Vue.name === 'Vue'
+  const isVueInstance = isObject($Vue) && $Vue._isVue
+  const isVue = isVueConstructor || isVueInstance
+
+  if (!isVue || (!minVersion && !isInstance && !isConstructor)) return isVue
+  if (!minVersion) return isInstance ? isVueInstance : isVueConstructor
+
+  const reduceVersion = str =>
+    str
+      .replace(/[A-Za-z-]/g, '')
+      .split('.')
+      .map(Number)
+
+  const constructor = isVueConstructor ? $Vue : $Vue.constructor
+  const [qMajor = 0, qMinor = 0, qPatch = 0] = reduceVersion(minVersion)
+  const [vMajor, vMinor, vPatch] = reduceVersion(constructor.version)
+  return vMajor >= qMajor && vMinor >= qMinor && vPatch >= qPatch
+}

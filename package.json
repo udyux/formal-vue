@@ -25,7 +25,7 @@
   "scripts": {
     "build": "vue-cli-service build --target lib --name FormalVue src/index.js",
     "start": "yarn build --watch",
-    "prepack": "yarn lint && yarn test && yarn build",
+    "preversion": "yarn lint && yarn test && yarn build",
     "postversion": "git push --follow-tags",
     "lint": "vue-cli-service lint",
     "test": "vue-cli-service test:unit"

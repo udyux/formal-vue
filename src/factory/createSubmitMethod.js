@@ -1,5 +1,5 @@
 import copyProps from 'copy-props'
-import FormalError from '@/models/FormalError'
+import FormalError from '../models/FormalError'
 import { events } from '../constants'
 import { returnValue } from '../helpers'
 
@@ -35,7 +35,7 @@ export default (context, submit, validators) => {
       .then(response => {
         this.$emit(events.formSubmitted, response)
         this.isSubmitPending = false
-        this.unbindState()
+        if (this.unbindState) this.unbindState()
         return Promise.resolve(onSuccess.call(context, response))
       })
       .catch(err => {

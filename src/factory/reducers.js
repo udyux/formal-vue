@@ -1,15 +1,26 @@
+import copyProps from 'copy-props'
 import { events } from '../constants'
-import { isRegExp, returnNullValue, returnTrueValue } from '../helpers'
+import { isFunction, isRegExp, returnNullValue, returnTrueValue } from '../helpers'
 
-export default modelDefinition =>
-  Object.keys(modelDefinition).reduce(
+export const reduceFieldValues = fields =>
+  Object.entries(fields).reduce((values, [field, { value }]) => ({ ...values, [field]: value }), {})
+
+export const reduceFieldMeta = (context, meta = {}) =>
+  Object.entries(meta).reduce((metaData, [key, value]) => {
+    const enumerable = true
+    const getter = isFunction(value) && { get: () => value.call(context), enumerable }
+    return Object.defineProperty(metaData, key, getter || { enumerable, value, writable: true })
+  }, {})
+
+export const reduceModel = formModel =>
+  Object.keys(formModel).reduce(
     ($form, field) => {
       const {
         initialValue = returnNullValue,
         isRequired = false,
         validate: validationHandler = returnTrueValue,
         ...options
-      } = modelDefinition[field]
+      } = formModel[field]
 
       const handleValidation = isRegExp(validationHandler)
         ? values => validationHandler.test(values[field])
@@ -62,7 +73,7 @@ export default modelDefinition =>
 
       if (options.format) {
         $form.observers.format.set(field, function() {
-          this.model[field].value = options.format(this.safeValuePairs)
+          this.model[field].value = options.format(copyProps(reduceFieldValues(this.model)))
         })
       }
 

@@ -1,16 +1,15 @@
-import createForm from './factory'
-import { uniqueId } from './helpers'
+import createFormalInstance from './factory'
+import { uniqueId, isVue } from './helpers'
 
 export default Vue => {
-  const [major, minor] = Vue.version.split('.').map(Number)
-  const inject = major < 2 || minor < 5 ? {} : { $parentForm: { default: null } }
+  const inject = isVue(Vue, { minVersion: '2.5' }) ? { $parentForm: { default: null } } : {}
 
   const formStore = new Vue({
     data: { states: {} },
     methods: {
-      bindState(id, formVM) {
-        formVM.unbindState = () => this.$delete(this.states, id)
-        formVM.model = this.states[id] || this.$set(this.states, id, formVM.model)
+      bindState(id, FormalVM) {
+        FormalVM.model = this.states[id] || this.$set(this.states, id, FormalVM.model)
+        return () => this.$delete(this.states, id)
       }
     }
   })
@@ -21,15 +20,15 @@ export default Vue => {
     computed: {},
     beforeCreate() {
       if (!this.$options.form) return
-      const formVM = createForm(Vue, this, this.$options.form)
-      this.$options.computed.$form = formVM
-      this.$options.provide.$parentForm = formVM()
+      const FormalVM = createFormalInstance(Vue, this, this.$options.form)
+      this.$options.computed.$form = FormalVM
+      this.$options.provide.$parentForm = FormalVM()
     },
 
     created() {
       if (!this.$options.form) return
       const name = this.$options.form.name || uniqueId()
-      formStore.bindState(name, this.$form)
+      this.$form.unbindState = formStore.bindState(name, this.$form)
     },
 
     destroyed() {

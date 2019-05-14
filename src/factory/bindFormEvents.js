@@ -1,5 +1,5 @@
 import { isEmpty } from '../helpers'
-import reduceFieldMeta from './reduceFieldMeta'
+import { reduceFieldMeta } from './reducers'
 
 export default ($form, { events, observers, metaMap }) => {
   $form.$on(events.formValidated, ({ errors }) => {

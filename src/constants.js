@@ -15,5 +15,6 @@ export const propTypes = [
   ['keepAlive', 'boolean'],
   ['model', 'object'],
   ['name', 'string'],
-  ['submit', 'function|object']
+  ['submit', 'function|object'],
+  ['unloadGuard', 'boolean|function']
 ]
