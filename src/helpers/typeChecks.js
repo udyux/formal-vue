@@ -23,9 +23,9 @@ export const isEmpty = (value = null) => {
 export const isVue = ($Vue, { minVersion, isInstance, isConstructor }) => {
   const isVueConstructor = isFunction($Vue) && $Vue.name === 'Vue'
   const isVueInstance = isObject($Vue) && $Vue._isVue
-  const isVue = isVueConstructor || isVueInstance
+  const isVueConstructorOrInstance = isVueConstructor || isVueInstance
 
-  if (!isVue || (!minVersion && !isInstance && !isConstructor)) return isVue
+  if (!isVueConstructorOrInstance || (!minVersion && !isInstance && !isConstructor)) return isVueConstructorOrInstance
   if (!minVersion) return isInstance ? isVueInstance : isVueConstructor
 
   const reduceVersion = str =>
