@@ -1,5 +1,5 @@
-import { reduceModel } from '@/factory/reducers'
 import UserRegister from './mocks/baseForm'
+import { reduceModel } from '@/factory/reducers'
 
 describe('reduceModel(model: Object) => fieldMaps: Object', () => {
   const $form = reduceModel(UserRegister.model)

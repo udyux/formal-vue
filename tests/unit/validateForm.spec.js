@@ -8,17 +8,21 @@ const initialState = {}
 
 describe('validateFormObject.js', () => {
   describe('validateForm(form: Object) => form: Object, throws', () => {
-    describe.each([{ initialState() {}, submit }, { initialState, submit: { onSubmit() {} } }])(
-      'validateForm(%p)',
-      mixin => {
-        const form = { name, keepAlive, model, ...mixin }
-        it('returns the form', () => {
-          expect(validateForm(form)).toBe(form)
-        })
-      }
-    )
+    describe.each([
+      { initialState() {}, submit },
+      { initialState, submit: { onSubmit() {} } }
+    ])('validateForm(%p)', mixin => {
+      const form = { name, keepAlive, model, ...mixin }
+      it('returns the form', () => {
+        expect(validateForm(form)).toBe(form)
+      })
+    })
 
-    describe.each([{ name, model }, { name, submit }, { name, model, submit: {} }])('validateForm(%p)', form => {
+    describe.each([
+      { name, model },
+      { name, submit },
+      { name, model, submit: {} }
+    ])('validateForm(%p)', form => {
       it('throws a missing required prop error', () => {
         expect(() => validateForm(form)).toThrow(/^\[Formal] Missing required prop/)
       })

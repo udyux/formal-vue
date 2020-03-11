@@ -11,7 +11,7 @@
 <script>
 import baseForm from './baseForm'
 import { echoEvents } from './utils'
-import { validValues } from '.'
+import { validValues } from './values'
 
 export default {
   name: 'MockForm',
