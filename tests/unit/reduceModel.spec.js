@@ -1,5 +1,5 @@
 import UserRegister from './mocks/baseForm'
-import { reduceModel } from '@/factory/reducers'
+import { reduceModel } from '@/core/reducers'
 
 describe('reduceModel(model: Object) => fieldMaps: Object', () => {
   const $form = reduceModel(UserRegister.model)
@@ -32,15 +32,15 @@ describe('reduceModel(model: Object) => fieldMaps: Object', () => {
     })
   })
 
-  describe('$form.computedFieldMap: Map', () => {
+  describe('$form.computedOutputMap: Map', () => {
     it('has one entry', () => {
-      expect($form.computedFieldMap.size).toBe(1)
+      expect($form.computedOutputMap.size).toBe(1)
     })
   })
 
-  describe('$form.observers.format: Map', () => {
+  describe('$form.observers.masks: Map', () => {
     it('has one entry', () => {
-      expect($form.observers.format.size).toBe(1)
+      expect($form.observers.masks.size).toBe(1)
     })
   })
 

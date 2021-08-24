@@ -1,4 +1,4 @@
-import createSubmitMethod from '@/factory/createSubmitMethod'
+import createSubmitMethod from '@/core/createSubmitMethod'
 
 describe('createSubmitMethod.js', () => {
   describe('createSubmitMethod(context: VueComponent, submit: Function | Object) => Function', () => {

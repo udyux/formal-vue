@@ -37,7 +37,7 @@ describe('inputs.js', () => {
   })
 
   describe.each(testCases)('inputs.%s.isRequired(options?: Object) => Object', (field, constructor) => {
-    const result = _get(inputs, field).isRequired({ format: v => String(v) })
+    const result = _get(inputs, field).isRequired({ mask: v => String(v) })
     const value = result.initialValue()
     const tag = String(constructor())
 
@@ -53,9 +53,9 @@ describe('inputs.js', () => {
       })
     })
 
-    describe('result.format(value: Any) => Any', () => {
+    describe('result.mask(value: Any) => Any', () => {
       it(`formats value to ${tag.valueOf()}`, () => {
-        expect(result.format(value)).toBe(tag)
+        expect(result.mask(value)).toBe(tag)
       })
     })
   })

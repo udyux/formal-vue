@@ -1,4 +1,4 @@
-import createFormalInstance from './factory'
+import createFormalInstance from './core'
 import { uniqueId, isVue } from './helpers'
 
 export default Vue => {

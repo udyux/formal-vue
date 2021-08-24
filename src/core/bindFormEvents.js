@@ -6,7 +6,7 @@ export default ($form, { events, observers, metaMap }) => {
     $form.errors = errors.reduce((errorMap, error) => ({ ...errorMap, [error.field]: error }), [])
   })
 
-  observers.format.forEach((handler, field) => {
+  observers.masks.forEach((handler, field) => {
     $form.$watch(`model.${field}.value`, handler.bind($form), { immediate: true })
   })
 

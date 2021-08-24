@@ -60,7 +60,7 @@ describe('FormalVue state', () => {
             ['password', true],
             ['confirmPassword', true],
             ['phone', false, '800-000-0000', '8000000000']
-          ])('%p initial values', (field, empty, formattedValue = '', rawValue = '') => {
+          ])('%p initial values', (field, empty, maskedValue = '', rawValue = '') => {
             describe(`$form.model.${field}.isEmpty: Boolean`, () => {
               it(empty ? 'is empty' : 'is not empty', () => {
                 expect($form.model[field].isEmpty).toBe(empty)
@@ -68,8 +68,8 @@ describe('FormalVue state', () => {
             })
 
             describe(`$form.model.${field}.value: Any`, () => {
-              it(`is "${formattedValue}"`, () => {
-                expect($form.model[field].value).toBe(formattedValue)
+              it(`is "${maskedValue}"`, () => {
+                expect($form.model[field].value).toBe(maskedValue)
               })
             })
 
@@ -127,7 +127,7 @@ describe('FormalVue state', () => {
     })
   })
 
-  describe('computed props', () => {
+  describe('computed output', () => {
     describe('$form.values: Object', () => {
       const wrapper = getForm()
 
@@ -135,7 +135,7 @@ describe('FormalVue state', () => {
         expect(Object.keys(wrapper.vm.$form.values).length).toBe(4)
       })
 
-      it('contains computed values', () => {
+      it('contains computed output values', () => {
         expect(wrapper.vm.$form.model.phone.value).toBe('800-000-0000')
         expect(wrapper.vm.$form.values.phone).toBe('8000000000')
       })

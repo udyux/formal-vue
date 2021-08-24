@@ -1,5 +1,7 @@
-const wrapRequired = model =>
-  Object.defineProperty(model, 'isRequired', { value: (options = {}) => model({ ...options, isRequired: true }) })
+const wrapRequired = modelFactory =>
+  Object.defineProperty(modelFactory, 'isRequired', {
+    value: (options = {}) => modelFactory({ ...options, isRequired: true })
+  })
 
 const modelWrapperReducer = (model, [key, mixin]) =>
   Object.defineProperty(model, key, { value: wrapRequired((options = {}) => model({ ...mixin, ...options })) })

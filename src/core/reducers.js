@@ -1,6 +1,6 @@
 import copyProps from 'copy-props'
-import { events } from '../constants'
 import { isFunction, isRegExp, returnNullValue, returnTrueValue } from '../helpers'
+import createFieldValidator from './createFieldValidator'
 
 export const reduceFieldValues = fields =>
   Object.entries(fields).reduce((values, [field, { value }]) => ({ ...values, [field]: value }), {})
@@ -34,21 +34,7 @@ export const reduceModel = formModel =>
         return { field, value, isValid, isMissing: isRequired && isEmpty }
       }
 
-      const validate = function() {
-        const result = getValidationResult(this.values, this.model)
-        this.model[field].isValid = result.isValid
-        this.model[field].isMissing = result.isMissing
-        this.$emit(events.fieldValidated, result)
-
-        if (result.isValid) {
-          this.$delete(this.errors, field)
-        } else {
-          this.errors[field] = result
-          this.$emit(events.fieldError, result)
-        }
-
-        return result.isValid
-      }
+      const validate = createFieldValidator(getValidationResult, field)
 
       validate.withValues = function(values) {
         return getValidationResult(values, this.model)
@@ -68,22 +54,22 @@ export const reduceModel = formModel =>
       }
 
       if (options.validateOnChange) $form.observers.validation.set(field, validate)
-      if (options.compute) $form.computedFieldMap.set(field, options.compute)
+      if (options.output) $form.computedOutputMap.set(field, options.output)
       if (options.meta) $form.metaMap.set(field, options.meta)
 
-      if (options.format) {
-        $form.observers.format.set(field, function() {
-          this.model[field].value = options.format(copyProps(reduceFieldValues(this.model)))
+      if (options.mask) {
+        $form.observers.masks.set(field, function() {
+          this.model[field].value = options.mask(copyProps(reduceFieldValues(this.model)))
         })
       }
 
       return $form
     },
     {
-      computedFieldMap: new Map(),
+      computedOutputMap: new Map(),
       metaMap: new Map(),
       model: {},
-      observers: { format: new Map(), validation: new Map() },
+      observers: { masks: new Map(), validation: new Map() },
       validators: []
     }
   )

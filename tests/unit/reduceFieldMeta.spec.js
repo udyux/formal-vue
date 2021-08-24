@@ -1,4 +1,4 @@
-import { reduceFieldMeta } from '@/factory/reducers'
+import { reduceFieldMeta } from '@/core/reducers'
 
 const context = {
   hashLevel: 144,

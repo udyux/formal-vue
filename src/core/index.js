@@ -34,8 +34,8 @@ export default (Vue, context, form) => {
         return Object.keys(this.model).reduce(
           (values, field) => ({
             ...values,
-            [field]: bindings.computedFieldMap.has(field)
-              ? bindings.computedFieldMap.get(field)(safeValues)
+            [field]: bindings.computedOutputMap.has(field)
+              ? bindings.computedOutputMap.get(field)(safeValues)
               : safeValues[field]
           }),
           {}

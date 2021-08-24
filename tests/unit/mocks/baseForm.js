@@ -10,8 +10,8 @@ const match = {
 }
 
 const substitute = {
-  // format to 000-000-0000
-  phonePrefixes: [/((?<!\d{6,})\d{3}(?=\d))/g, '$1-'],
+  // format to (###) ###-####
+  phonePrefixes: [/^(\d{1,3})(\d{3})?(\d*)/g, '($1) $2-$3'],
   // remove non digits
   nonDigits: [/\D/g, '']
 }
@@ -39,8 +39,8 @@ export default {
 
     phone: inputs.text({
       validate: ({ phone }) => match.phone.test(phone),
-      format: ({ phone }) => phone.replace(...substitute.nonDigits).replace(...substitute.phonePrefixes),
-      compute: ({ phone }) => phone.replace(...substitute.nonDigits)
+      mask: ({ phone }) => phone.replace(...substitute.nonDigits).replace(...substitute.phonePrefixes),
+      output: ({ phone }) => phone.replace(...substitute.nonDigits)
     })
   }
 }

@@ -1,4 +1,4 @@
-import validateForm from '@/factory/validateFormObject'
+import validateForm from '@/core/validateFormObject'
 
 const name = 'Form'
 const keepAlive = true
