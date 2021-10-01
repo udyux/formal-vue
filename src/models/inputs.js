@@ -1,8 +1,12 @@
 const wrapRequired = model =>
-  Object.defineProperty(model, 'isRequired', { value: (options = {}) => model({ ...options, isRequired: true }) })
+  Object.defineProperty(model, 'isRequired', {
+    value: (options = {}) => model({ ...options, isRequired: true })
+  })
 
 const modelWrapperReducer = (model, [key, mixin]) =>
-  Object.defineProperty(model, key, { value: wrapRequired((options = {}) => model({ ...mixin, ...options })) })
+  Object.defineProperty(model, key, {
+    value: wrapRequired((options = {}) => model({ ...mixin, ...options }))
+  })
 
 const defineModel = (initialValue, mixins = {}) =>
   Object.entries(mixins).reduce(
